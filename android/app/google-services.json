@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "369211268612",
+    "project_id": "yep-atomi",
+    "storage_bucket": "yep-atomi.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:369211268612:android:9fc73293a053ea827b5f51",
+        "android_client_info": {
+          "package_name": "com.example.admin_atomi_yep"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4eim6SLvY0oFipo-FjP7U-FF85lhCnLg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:369211268612:android:7b9e46d53f1bd86f7b5f51",
+        "android_client_info": {
+          "package_name": "com.example.atomi_yep"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4eim6SLvY0oFipo-FjP7U-FF85lhCnLg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
