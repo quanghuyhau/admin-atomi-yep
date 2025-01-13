@@ -1,5 +1,6 @@
 import 'package:admin_atomi_yep/cubits/envent_cubit.dart';
 import 'package:admin_atomi_yep/cubits/envent_state.dart';
+import 'package:admin_atomi_yep/screens/image_picker_example.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/event.dart';
@@ -7,7 +8,7 @@ import '../models/event.dart';
 class EventDetailScreen extends StatelessWidget {
   final Event event;
 
-  const EventDetailScreen({required this.event});
+  const EventDetailScreen({super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {
@@ -20,23 +21,25 @@ class EventDetailScreen extends StatelessWidget {
             onSelected: (value) async {
               switch (value) {
                 case 'start':
-                  await context.read<EventCubit>()
+                  await context
+                      .read<EventCubit>()
                       .updateEventStatus(event.id, 'active');
                   break;
                 case 'stop':
-                  await context.read<EventCubit>()
+                  await context
+                      .read<EventCubit>()
                       .updateEventStatus(event.id, 'closed');
                   break;
               }
             },
             itemBuilder: (context) => [
               if (event.status == 'pending')
-                PopupMenuItem(
+                const PopupMenuItem(
                   value: 'start',
                   child: Text('Bắt Đầu'),
                 ),
               if (event.status == 'active')
-                PopupMenuItem(
+                const PopupMenuItem(
                   value: 'stop',
                   child: Text('Kết Thúc'),
                 ),
@@ -50,11 +53,11 @@ class EventDetailScreen extends StatelessWidget {
           final totalVotes = votes.values.fold(0, (a, b) => a + b);
 
           return ListView(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             children: [
               Card(
                 child: Padding(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
                       Icon(
@@ -62,10 +65,10 @@ class EventDetailScreen extends StatelessWidget {
                         size: 48,
                         color: Theme.of(context).primaryColor,
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       Text(
                         event.name,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
@@ -74,32 +77,39 @@ class EventDetailScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 16),
-
+              const SizedBox(height: 16),
               _buildStatusCard(event.status),
-              SizedBox(height: 24),
-
-              Text(
-                'Kết Quả Bình Chọn',
-                style: Theme.of(context).textTheme.titleLarge,
+              const SizedBox(height: 24),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ImagePickerExample(),
+                    ),
+                  );
+                },
+                child: Text(
+                  'Kết Quả Bình Chọn',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
                 'Tổng số vote: $totalVotes',
                 style: TextStyle(color: Colors.grey[600]),
               ),
-              SizedBox(height: 16),
-
+              const SizedBox(height: 16),
               GridView.builder(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   childAspectRatio: 1.5,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
                 ),
-                itemCount: 8, // 8 boxes
+                itemCount: 8,
                 itemBuilder: (context, index) {
                   final voteCount = votes[index] ?? 0;
                   final percentage = totalVotes > 0
@@ -108,13 +118,13 @@ class EventDetailScreen extends StatelessWidget {
 
                   return Card(
                     child: Padding(
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             'Ô ${index + 1}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -145,7 +155,7 @@ class EventDetailScreen extends StatelessWidget {
     );
   }
 
-   _buildStatusCard(String status) {
+  _buildStatusCard(String status) {
     Color color;
     String text;
 
@@ -163,8 +173,11 @@ class EventDetailScreen extends StatelessWidget {
         text = 'Đã Kết Thúc';
     }
 
-    return Card(
-      color: color.withOpacity(0.1),
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(width: 1, color: color)),
       child: Padding(
         padding: EdgeInsets.all(16),
         child: Row(

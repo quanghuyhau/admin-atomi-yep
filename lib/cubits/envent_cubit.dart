@@ -24,7 +24,6 @@ class EventCubit extends Cubit<EventState> {
           status: EventStatus.success,
         ));
 
-        // Watch votes for active events
         for (var event in events) {
           if (event.status == 'active') {
             _watchEventVotes(event.id);
@@ -65,6 +64,19 @@ class EventCubit extends Cubit<EventState> {
   Future<void> updateEventStatus(String eventId, String status) async {
     try {
       await _firebaseService.updateEventStatus(eventId, status);
+    } catch (e) {
+      emit(state.copyWith(
+        error: e.toString(),
+        status: EventStatus.failure,
+      ));
+    }
+  }
+
+  Future<void> deleteEvent(String eventId) async {
+    try {
+      await _firebaseService.deleteEvent(eventId);
+      _voteSubscriptions[eventId]?.cancel();
+      _voteSubscriptions.remove(eventId);
     } catch (e) {
       emit(state.copyWith(
         error: e.toString(),

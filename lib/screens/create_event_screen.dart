@@ -28,7 +28,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
         child: ListView(
           padding: EdgeInsets.all(16),
           children: [
-            // Event Name
             TextFormField(
               controller: _nameController,
               decoration: InputDecoration(
@@ -45,7 +44,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
             ),
             SizedBox(height: 24),
 
-            // Create Button
             ElevatedButton(
               onPressed: _isLoading ? null : _createEvent,
               child: Padding(
@@ -74,7 +72,6 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // Create new event
       final event = Event(
         id: '',
         name: _nameController.text,

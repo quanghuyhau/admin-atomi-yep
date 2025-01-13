@@ -1,10 +1,12 @@
 import 'package:admin_atomi_yep/models/event.dart';
 import 'package:admin_atomi_yep/screens/event_detail_screen.dart';
 import 'package:flutter/material.dart';
+
 class EventCard extends StatelessWidget {
   final Event event;
+  final VoidCallback onDelete;
 
-  const EventCard({required this.event});
+  const EventCard({required this.event, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -57,11 +59,14 @@ class EventCard extends StatelessWidget {
                 ),
               ),
 
-              // Arrow Icon
-              Icon(
-                Icons.arrow_forward_ios,
-                color: Colors.grey,
-                size: 16,
+              IconButton(
+                icon: Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                ),
+                onPressed: () {
+                  _showDeleteConfirmation(context);
+                },
               ),
             ],
           ),
@@ -70,7 +75,7 @@ class EventCard extends StatelessWidget {
     );
   }
 
-   _buildStatusChip(String status) {
+  _buildStatusChip(String status) {
     Color color;
     String text;
 
@@ -102,6 +107,32 @@ class EventCard extends StatelessWidget {
           fontWeight: FontWeight.bold,
           fontSize: 12,
         ),
+      ),
+    );
+  }
+
+  void _showDeleteConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Xóa Sự Kiện'),
+        content: Text('Bạn có chắc muốn xóa sự kiện này không?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Hủy'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              onDelete();
+            },
+            child: Text(
+              'Xóa',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
       ),
     );
   }

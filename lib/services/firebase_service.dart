@@ -4,17 +4,25 @@ import 'package:firebase_storage/firebase_storage.dart';
 import '../models/event.dart';
 
 class FirebaseService {
-  final _firestore = FirebaseFirestore.instance;
-  final _storage = FirebaseStorage.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
   Future<String> uploadEventImage(File imageFile, String fileName) async {
-    final ref = _storage.ref().child('event_images/$fileName.jpg');
-    await ref.putFile(imageFile);
-    return await ref.getDownloadURL();
+    try {
+      final ref = _storage.ref().child('event_images/$fileName.jpg');
+      await ref.putFile(imageFile);
+      return await ref.getDownloadURL();
+    } catch (e) {
+      throw Exception('Failed to upload image: $e');
+    }
   }
 
   Future<void> createEvent(Event event) async {
-    await _firestore.collection('events').add(event.toMap());
+    try {
+      await _firestore.collection('events').add(event.toMap());
+    } catch (e) {
+      throw Exception('Failed to create event: $e');
+    }
   }
 
   Stream<List<Event>> watchEvents() {
@@ -22,15 +30,25 @@ class FirebaseService {
         .collection('events')
         .orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-        .map((doc) => Event.fromFirestore(doc))
-        .toList());
+        .map((snapshot) {
+      return snapshot.docs.map((doc) => Event.fromFirestore(doc)).toList();
+    });
   }
 
   Future<void> updateEventStatus(String eventId, String status) async {
-    await _firestore.collection('events').doc(eventId).update({
-      'status': status,
-    });
+    try {
+      await _firestore.collection('events').doc(eventId).update({'status': status});
+    } catch (e) {
+      throw Exception('Failed to update event status: $e');
+    }
+  }
+
+  Future<void> deleteEvent(String eventId) async {
+    try {
+      await _firestore.collection('events').doc(eventId).delete();
+    } catch (e) {
+      throw Exception('Failed to delete event: $e');
+    }
   }
 
   Stream<Map<int, int>> watchEventVotes(String eventId) {
@@ -40,10 +58,9 @@ class FirebaseService {
         .collection('votes')
         .snapshots()
         .map((snapshot) {
-      Map<int, int> boxVotes = {};
+      final Map<int, int> boxVotes = {};
       for (var doc in snapshot.docs) {
-        List<int> selectedBoxes =
-        List<int>.from(doc.data()['selectedBoxes'] ?? []);
+        final List<int> selectedBoxes = List<int>.from(doc.data()['selectedBoxes'] ?? []);
         for (var boxIndex in selectedBoxes) {
           boxVotes[boxIndex] = (boxVotes[boxIndex] ?? 0) + 1;
         }

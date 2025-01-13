@@ -25,7 +25,7 @@ class EventState extends Equatable {
     return EventState(
       events: events ?? this.events,
       status: status ?? this.status,
-      error: error ?? this.error,
+      error: error,
       eventVotes: eventVotes ?? this.eventVotes,
     );
   }

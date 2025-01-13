@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/event.dart';
 import 'create_event_screen.dart';
-import 'event_detail_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -51,10 +50,39 @@ class HomeScreen extends StatelessWidget {
             itemCount: state.events.length,
             itemBuilder: (context, index) {
               final event = state.events[index];
-              return EventCard(event: event);
+              return EventCard(event: event, onDelete: () {
+                _deleteEvent(context, event);
+              },);
             },
           );
         },
+      ),
+    );
+  }
+  void _deleteEvent(BuildContext context, Event event) {
+    final cubit = context.read<EventCubit>();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Xóa Sự Kiện'),
+        content: const Text('Bạn có chắc muốn xóa sự kiện này không?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Hủy'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              cubit.deleteEvent(event.id);
+            },
+            child: const Text(
+              'Xóa',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
       ),
     );
   }
