@@ -6,7 +6,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/event.dart';
 import 'create_event_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<EventCubit>().initListEvent();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,16 +61,20 @@ class HomeScreen extends StatelessWidget {
             itemCount: state.events.length,
             itemBuilder: (context, index) {
               final event = state.events[index];
-              return EventCard(event: event, onDelete: () {
-                _deleteEvent(context, event);
-              },);
+              return EventCard(
+                event: event,
+                onDelete: () {
+                  _deleteEvent(context, event);
+                },
+              );
             },
           );
         },
       ),
     );
   }
-  void _deleteEvent(BuildContext context, Event event) {
+
+  void _deleteEvent(BuildContext context, EventModel event) {
     final cubit = context.read<EventCubit>();
 
     showDialog(
@@ -87,4 +102,3 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-

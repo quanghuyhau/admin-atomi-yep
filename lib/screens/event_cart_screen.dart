@@ -3,7 +3,7 @@ import 'package:admin_atomi_yep/screens/event_detail_screen.dart';
 import 'package:flutter/material.dart';
 
 class EventCard extends StatelessWidget {
-  final Event event;
+  final EventModel event;
   final VoidCallback onDelete;
 
   const EventCard({required this.event, required this.onDelete});

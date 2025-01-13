@@ -13,25 +13,40 @@ class FirebaseService {
       await ref.putFile(imageFile);
       return await ref.getDownloadURL();
     } catch (e) {
-      throw Exception('Failed to upload image: $e');
+      throw Exception('Không tải được hình ảnh: $e');
     }
   }
 
-  Future<void> createEvent(Event event) async {
+  Future<void> createEvent(EventModel event) async {
     try {
       await _firestore.collection('events').add(event.toMap());
     } catch (e) {
-      throw Exception('Failed to create event: $e');
+      throw Exception('Không tạo được sự kiện: $e');
     }
   }
 
-  Stream<List<Event>> watchEvents() {
+  Future<List<EventModel>> initListEvent() async {
+    try {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance.collection("events").get();
+
+      List<EventModel> eventList = snapshot.docs.map((doc) {
+        return EventModel.fromFirestore(doc);
+      }).toList();
+
+      return eventList;
+    } catch (e) {
+      print("Error fetching events: $e");
+      return [];
+    }
+  }
+
+  Stream<List<EventModel>> watchEvents() {
     return _firestore
         .collection('events')
         .orderBy('createdAt', descending: true)
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs.map((doc) => Event.fromFirestore(doc)).toList();
+      return snapshot.docs.map((doc) => EventModel.fromFirestore(doc)).toList();
     });
   }
 
@@ -39,7 +54,7 @@ class FirebaseService {
     try {
       await _firestore.collection('events').doc(eventId).update({'status': status});
     } catch (e) {
-      throw Exception('Failed to update event status: $e');
+      throw Exception('Không cập nhật được trạng thái sự kiện: $e');
     }
   }
 
@@ -47,7 +62,7 @@ class FirebaseService {
     try {
       await _firestore.collection('events').doc(eventId).delete();
     } catch (e) {
-      throw Exception('Failed to delete event: $e');
+      throw Exception('Không thể xóa sự kiện: $e');
     }
   }
 
@@ -68,4 +83,14 @@ class FirebaseService {
       return boxVotes;
     });
   }
+  Future<void> updateEventBoxNames(String eventId, List<String> boxNames) async {
+    try {
+      await _firestore.collection('events').doc(eventId).update({
+        'boxNames': boxNames,
+      });
+    } catch (e) {
+      throw Exception('Không cập nhật được tên:  $e');
+    }
+  }
+
 }
