@@ -48,7 +48,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
               return null;
             },
           ),
-          // Expanded(child: _choiceWidget()),
+          Expanded(child: _choiceWidget()),
           SizedBox(height: 24),
           ElevatedButton(
             onPressed: _isLoading ? null : _createEvent,
