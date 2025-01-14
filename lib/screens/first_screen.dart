@@ -43,7 +43,7 @@ class _FirstScreenState extends State<FirstScreen> {
       child: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Form(
-          key: _formKey, // Đảm bảo sử dụng Form để xác thực
+          key: _formKey,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -51,17 +51,16 @@ class _FirstScreenState extends State<FirstScreen> {
                 cursorColor: AppColors.blue,
                 controller: _controller,
                 onChanged: (value) {
-                  // Kiểm tra nếu giá trị trống
                   if (value == null || value.isEmpty) {
                     setState(() {
-                      validateNext = false; // Nếu trống, không hợp lệ
+                      validateNext = false;
                     });
                   } else {
                     setState(() {
-                      validateNext = true; // Nếu có giá trị, hợp lệ
+                      validateNext = true;
                     });
                   }
-                  return null; // Nếu không có lỗi, trả về null
+                  return null;
                 },
                 decoration: InputDecoration(
                   labelText: 'Enter your name',
@@ -108,9 +107,7 @@ class _FirstScreenState extends State<FirstScreen> {
               ),
               IconButton(
                 onPressed: () {
-                  // Kiểm tra lại tính hợp lệ của form
                   if (_formKey.currentState!.validate()) {
-                    // Nếu hợp lệ, chuyển sang màn hình khác
                     nameAccount = _controller.text;
                     if (_controller.text == AdminAccount.admin) {
                       Navigator.push(
@@ -123,9 +120,8 @@ class _FirstScreenState extends State<FirstScreen> {
                       print("user");
                     }
                   } else {
-                    // Nếu không hợp lệ, không làm gì cả
                     setState(() {
-                      validateNext = false; // Nếu không hợp lệ, giữ màu xám
+                      validateNext = false;
                     });
                   }
                 },
@@ -133,7 +129,7 @@ class _FirstScreenState extends State<FirstScreen> {
                   Icons.double_arrow_sharp,
                   size: 50,
                   color: validateNext ? Colors.white : Colors
-                      .grey, // Màu trắng nếu hợp lệ, xám nếu không
+                      .grey,
                 ),
               )
             ],

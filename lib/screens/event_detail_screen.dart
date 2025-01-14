@@ -6,17 +6,24 @@ import '../cubits/envent_cubit.dart';
 import '../cubits/envent_state.dart';
 import '../models/event.dart';
 
-class EventDetailScreen extends StatelessWidget {
+class EventDetailScreen extends StatefulWidget {
   final EventModel event;
 
   const EventDetailScreen({super.key, required this.event});
+
+  @override
+  State<EventDetailScreen> createState() => _EventDetailScreenState();
+}
+
+class _EventDetailScreenState extends State<EventDetailScreen> {
+  int totalVotes = 1;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          event.name,
+          widget.event.name,
           style: AppTextStyles.heading1,
         ),
         centerTitle: true,
@@ -108,8 +115,8 @@ class EventDetailScreen extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: BlocBuilder<EventCubit, EventState>(
         builder: (context, state) {
-          final votes = state.eventVotes[event.id] ?? {};
-          final totalVotes = votes.values.fold(0, (a, b) => a + b);
+          final votes = state.eventVotes[widget.event.id] ?? {};
+          totalVotes = votes.values.fold(0, (a, b) => a + b);
 
           return Column(
             children: [
@@ -121,11 +128,12 @@ class EventDetailScreen extends StatelessWidget {
               const SizedBox(height: 16),
               Expanded(
                 child: ListView.builder(
-                  itemCount: event.listChoice.length, // Số phần tử trong lưới
+                  itemCount: widget.event.listChoice.length,
+                  // Số phần tử trong lưới
                   itemBuilder: (BuildContext context, int index) {
                     return _item(
-                        imagePath: event.listChoice[index].imagePath,
-                        textChoice: event.listChoice[index].textChoice,
+                        imagePath: widget.event.listChoice[index].imagePath,
+                        textChoice: widget.event.listChoice[index].textChoice,
                         voteIndex: votes[index] ?? 0);
                   },
                 ),
@@ -166,11 +174,17 @@ class EventDetailScreen extends StatelessWidget {
           ),
           const SizedBox(width: 16),
           Spacer(),
+          Container(
+            decoration: BoxDecoration(
+                color: AppColors.primaryColor, shape: BoxShape.circle),
+            padding: const EdgeInsets.all(8.0),
+            child: Text('$voteIndex', style: AppTextStyles.bodyText1White),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              '$voteIndex',
-              style: AppTextStyles.bodyText1
+              '${(totalVotes != 0 && totalVotes != null && voteIndex != null) ? (voteIndex / totalVotes * 100).toStringAsFixed(1) : '0.0'} %',
+              style: AppTextStyles.bodyText1,
             ),
           ),
         ],
@@ -231,22 +245,22 @@ class EventDetailScreen extends StatelessWidget {
           case 'start':
             await context
                 .read<EventCubit>()
-                .updateEventStatus(event.id, 'active');
+                .updateEventStatus(widget.event.id, 'active');
             break;
           case 'stop':
             await context
                 .read<EventCubit>()
-                .updateEventStatus(event.id, 'closed');
+                .updateEventStatus(widget.event.id, 'closed');
             break;
         }
       },
       itemBuilder: (context) => [
-        if (event.status == 'pending')
+        if (widget.event.status == 'pending')
           const PopupMenuItem(
             value: 'start',
             child: Text('Bắt Đầu'),
           ),
-        if (event.status == 'active')
+        if (widget.event.status == 'active')
           const PopupMenuItem(
             value: 'stop',
             child: Text('Kết Thúc'),

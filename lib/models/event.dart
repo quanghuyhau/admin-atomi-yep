@@ -44,7 +44,6 @@ class EventModel {
   factory EventModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
 
-    // Khởi tạo listChoice từ dữ liệu trong Firestore
     List<ChoiceModel> choiceList = [];
     if (data['boxNames'] != null && data['boxNames'] is List) {
       choiceList = (data['boxNames'] as List)

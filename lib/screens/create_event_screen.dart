@@ -52,7 +52,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
               decoration: InputDecoration(
                 labelText: 'Tên Sự Kiện',
                 border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
                 prefixIcon: Icon(Icons.event),
               ),
               validator: (value) {
@@ -72,9 +72,9 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
               child: _isLoading
                   ? CircularProgressIndicator(color: Colors.white)
                   : Text(
-                      'Tạo Sự Kiện',
-                      style: TextStyle(fontSize: 16),
-                    ),
+                'Tạo Sự Kiện',
+                style: TextStyle(fontSize: 16),
+              ),
             ),
             style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).primaryColor,
@@ -122,7 +122,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
             key: _formKey,
             child: Column(
               children: [
-                for (int i = 0; i < 8; i++) _itemChoiceWidget(index: i)
+                for (int i = 0; i < 7; i++) _itemChoiceWidget(index: i)
               ],
             )),
       ),
@@ -163,16 +163,16 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
               },
               child: BlocBuilder<EventCubit, EventState>(
                   builder: (context, state) {
-                return ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.asset(
-                      state.currentEventCreate?.listChoice[index].imagePath ??
-                          "assets/images/1.jpg",
-                      height: 90,
-                      width: 90,
-                      fit: BoxFit.fill,
-                    ));
-              }),
+                    return ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.asset(
+                          state.currentEventCreate?.listChoice[index].imagePath ??
+                              "assets/images/1.jpg",
+                          height: 90,
+                          width: 90,
+                          fit: BoxFit.fill,
+                        ));
+                  }),
             )
           ],
         ),
@@ -184,9 +184,10 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
     return showDialog<String>(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Chọn Ảnh'),
-          content: GridView.builder(
+        return Dialog(
+          child: Container(
+            height: 300, // Đặt chiều cao cố định hoặc linh hoạt tùy nhu cầu
+            child: GridView.builder(
               itemCount: listFake.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
@@ -198,13 +199,16 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
                 return InkWell(
                   onTap: () {
                     Navigator.of(context).pop(listFake[index]);
-                    setState(() {});
+                    setState(() {}); // Cập nhật UI sau khi chọn ảnh
                   },
                   child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.asset(listFake[index])),
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.asset(listFake[index]),
+                  ),
                 );
-              }),
+              },
+            ),
+          ),
         );
       },
     );

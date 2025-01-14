@@ -28,6 +28,12 @@ class AppTextStyles {
     color: AppColors.primaryColor,
   );
 
+  static const TextStyle bodyText1White = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w400,
+    color: AppColors.white  ,
+  );
+
   static const TextStyle bodyText2 = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.normal,
