@@ -1,3 +1,5 @@
+import 'package:admin_atomi_yep/constants/app_colors.dart';
+import 'package:admin_atomi_yep/constants/app_text_style.dart';
 import 'package:admin_atomi_yep/cubits/envent_cubit.dart';
 import 'package:admin_atomi_yep/cubits/envent_state.dart';
 import 'package:admin_atomi_yep/screens/event_cart_screen.dart';
@@ -22,9 +24,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Quản Lý Sự Kiện'),
+        title: Text('Quản Lý Sự Kiện',style: AppTextStyles.heading1,),
+        backgroundColor: AppColors.primaryColor,
         centerTitle: true,
+        automaticallyImplyLeading: false,
       ),
+      backgroundColor:AppColors.white,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -32,7 +37,8 @@ class _HomeScreenState extends State<HomeScreen> {
             MaterialPageRoute(builder: (_) => CreateEventScreen()),
           );
         },
-        child: Icon(Icons.add),
+        backgroundColor: AppColors.primaryColor,
+        child: Icon(Icons.add,color: AppColors.white,),
       ),
       body: BlocBuilder<EventCubit, EventState>(
         builder: (context, state) {
@@ -63,6 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
               final event = state.events[index];
               return EventCard(
                 event: event,
+                index: index,
                 onDelete: () {
                   _deleteEvent(context, event);
                 },

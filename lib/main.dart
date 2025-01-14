@@ -1,7 +1,9 @@
 import 'package:admin_atomi_yep/cubits/envent_cubit.dart';
+import 'package:admin_atomi_yep/screens/first_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'constants/app_colors.dart';
 import 'services/firebase_service.dart';
 import 'screens/home_screen.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +13,8 @@ void main() async {
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
+
+String nameAccount = "";
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -30,13 +34,13 @@ class MyApp extends StatelessWidget {
         title: 'Admin App',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue,
-            brightness: Brightness.light,
+          primaryColor: AppColors.primaryColor,
+          appBarTheme: AppBarTheme(
+            color: AppColors.primaryColor, // Màu của AppBar
           ),
-          useMaterial3: true,
         ),
-        home:  HomeScreen(),
+        home: FirstScreen(),
+        // home:  HomeScreen(),
       ),
     );
   }

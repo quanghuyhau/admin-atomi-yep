@@ -1,3 +1,5 @@
+import 'package:admin_atomi_yep/constants/app_colors.dart';
+import 'package:admin_atomi_yep/constants/app_text_style.dart';
 import 'package:admin_atomi_yep/constants/images_constants.dart';
 import 'package:admin_atomi_yep/cubits/envent_cubit.dart';
 import 'package:flutter/material.dart';
@@ -22,31 +24,44 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tạo Sự Kiện Mới'),
+        title: Text(
+          'Tạo Sự Kiện Mới',
+          style: AppTextStyles.heading1,
+        ),
+        backgroundColor: AppColors.primaryColor,
         centerTitle: true,
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: AppColors.white,
+            )),
       ),
+      backgroundColor: AppColors.white,
       body: Column(
         children: [
-          TextFormField(
-            controller: _nameController,
-            onChanged: (value){
-              context
-                  .read<EventCubit>()
-                  .updateNameEvent(valueName: value);
-            },
-            decoration: InputDecoration(
-              labelText: 'Tên Sự Kiện',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(15)
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextFormField(
+              controller: _nameController,
+              onChanged: (value) {
+                context.read<EventCubit>().updateNameEvent(valueName: value);
+              },
+              decoration: InputDecoration(
+                labelText: 'Tên Sự Kiện',
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                prefixIcon: Icon(Icons.event),
               ),
-              prefixIcon: Icon(Icons.event),
+              validator: (value) {
+                if (value?.isEmpty ?? true) {
+                  return 'Vui lòng nhập tên sự kiện';
+                }
+                return null;
+              },
             ),
-            validator: (value) {
-              if (value?.isEmpty ?? true) {
-                return 'Vui lòng nhập tên sự kiện';
-              }
-              return null;
-            },
           ),
           Expanded(child: _choiceWidget()),
           SizedBox(height: 24),
@@ -100,59 +115,67 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
   }
 
   Widget _choiceWidget() {
-    return SingleChildScrollView(
-      child: Form(
-          key: _formKey,
-          child: Column(
-            children: [for (int i = 0; i < 8; i++) _itemChoiceWidget(index: i)],
-          )),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SingleChildScrollView(
+        child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                for (int i = 0; i < 8; i++) _itemChoiceWidget(index: i)
+              ],
+            )),
+      ),
     );
   }
 
   Widget _itemChoiceWidget({required int index}) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      margin: const EdgeInsets.all(8),
-      child: Row(
-        children: [
-          Expanded(
-            // width: 120,
-            child: TextField(
-              decoration: InputDecoration(
-                labelText: 'Lựa chọn ${index + 1}',
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                prefixIcon: Icon(
-                  Icons.panorama_photosphere_select,
-                  color: Colors.grey.withOpacity(0.8),
+    return Card(
+      color: AppColors.white,
+      child: Container(
+        margin: const EdgeInsets.all(8),
+        child: Row(
+          children: [
+            Expanded(
+              // width: 120,
+              child: TextField(
+                decoration: InputDecoration(
+                  labelText: 'Lựa chọn ${index + 1}',
+                  filled: true,
+                  fillColor: AppColors.backgroundTextField,
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.circular(24),
+                  ),
                 ),
+                onChanged: (value) {
+                  context
+                      .read<EventCubit>()
+                      .updateValueChoice(valueChoice: value, index: index);
+                },
               ),
-              onChanged: (value) {
-                context
-                    .read<EventCubit>()
-                    .updateValueChoice(valueChoice: value, index: index);
-              },
             ),
-          ),
-          InkWell(
-            onTap: () async {
-              final String? result = await showCustomDialog(context);
-              context.read<EventCubit>().updateImagePathChoice(
-                  imagePath: result ?? Images.n1, index: index);
-            },
-            child: BlocBuilder<EventCubit, EventState>(
-              builder: (context,state) {
+            InkWell(
+              onTap: () async {
+                final String? result = await showCustomDialog(context);
+                context.read<EventCubit>().updateImagePathChoice(
+                    imagePath: result ?? Images.n1, index: index);
+              },
+              child: BlocBuilder<EventCubit, EventState>(
+                  builder: (context, state) {
                 return ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Image.asset(
-                      state.currentEventCreate?.listChoice[index].imagePath ?? "assets/images/1.jpg",
-                      height: 120,
-                      width: 120,
+                      state.currentEventCreate?.listChoice[index].imagePath ??
+                          "assets/images/1.jpg",
+                      height: 90,
+                      width: 90,
+                      fit: BoxFit.fill,
                     ));
-              }
-            ),
-          )
-        ],
+              }),
+            )
+          ],
+        ),
       ),
     );
   }
