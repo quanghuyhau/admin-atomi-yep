@@ -48,7 +48,7 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
               return null;
             },
           ),
-          Expanded(child: _choiceWidget()),
+          // Expanded(child: _choiceWidget()),
           SizedBox(height: 24),
           ElevatedButton(
             onPressed: _isLoading ? null : _createEvent,
@@ -104,7 +104,9 @@ class _CreateEventScreenState extends State<CreateEventScreen> {
       child: Form(
           key: _formKey,
           child: Column(
-            children: [for (int i = 0; i < 8; i++) _itemChoiceWidget(index: i)],
+            children: [for (int i = 0; i < 8; i++) _itemChoiceWidget(index: i),
+            Image.asset("assets/images/1.jpg")
+            ],
           )),
     );
   }
