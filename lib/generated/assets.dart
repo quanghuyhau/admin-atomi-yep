@@ -7,6 +7,13 @@ class Assets {
   static const String images3 = 'assets/images/3.jpg';
   static const String images4 = 'assets/images/4.jpg';
   static const String images5 = 'assets/images/5.jpg';
-  static const String imagesBackgrounfFirstScreen = 'assets/images/background_first_screen.jpg';
+  static const String imagesAnhTaiChiDep = 'assets/images/anh_tai_chi_dep.png';
+  static const String imagesBackgroundFirstScreen = 'assets/images/background_first_screen.jpg';
+  static const String imagesBugHunter = 'assets/images/bug_hunter.png';
+  static const String imagesChangTraiLangMan = 'assets/images/chang_trai_lang_man.png';
+  static const String imagesDoiHeThong = 'assets/images/doi_he_thong.png';
+  static const String imagesForbirden403 = 'assets/images/forbirden_403.png';
+  static const String imagesOhLaLa = 'assets/images/oh_la_la.png';
+  static const String imagesTichChuCoLup = 'assets/images/tich_chu_co_lup.png';
 
 }

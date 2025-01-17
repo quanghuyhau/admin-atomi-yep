@@ -39,8 +39,8 @@ class MyApp extends StatelessWidget {
             color: AppColors.primaryColor, // Màu của AppBar
           ),
         ),
-        home: FirstScreen(),
-        // home:  HomeScreen(),
+        // home: FirstScreen(),
+        home:  HomeScreen(),
       ),
     );
   }

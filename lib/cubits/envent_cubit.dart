@@ -12,31 +12,24 @@ class EventCubit extends Cubit<EventState> {
   Map<String, StreamSubscription> _voteSubscriptions = {};
 
   EventModel eventModel = EventModel(
-      id: "",
-      name: "",
-      status: "pending",
-      createdAt: DateTime.now(),
-      listChoice: [
-        ChoiceModel(id: "1", textChoice: "", imagePath: Images.n1),
-        ChoiceModel(id: "2", textChoice: "", imagePath: Images.n1),
-        ChoiceModel(id: "3", textChoice: "", imagePath: Images.n1),
-        ChoiceModel(id: "4", textChoice: "", imagePath: Images.n1),
-        ChoiceModel(id: "5", textChoice: "", imagePath: Images.n1),
-        ChoiceModel(id: "6", textChoice: "", imagePath: Images.n1),
-        ChoiceModel(id: "7", textChoice: "", imagePath: Images.n1),
-        ChoiceModel(id: "8", textChoice: "", imagePath: Images.n1),
-      ]);
+    id: "",
+    name: "",
+    status: "pending",
+    createdAt: DateTime.now(),
+    listChoice: [],
+  );
 
   EventCubit(this._firebaseService) : super(EventState()) {
     watchEvents();
   }
 
+  // Theo dõi sự kiện từ Firebase
   void watchEvents() {
     emit(state.copyWith(status: EventStatus.loading));
 
     _eventsSubscription?.cancel();
     _eventsSubscription = _firebaseService.watchEvents().listen(
-      (events) {
+          (events) {
         emit(state.copyWith(
           events: events,
           status: EventStatus.success,
@@ -53,39 +46,54 @@ class EventCubit extends Cubit<EventState> {
           error: error.toString(),
           status: EventStatus.failure,
         ));
-        print(error.toString() + "sadjkdafkasdf");
+        print('Error watching events: $error');
       },
     );
   }
 
-  void initListEvent() async {
+  // Khởi tạo danh sách sự kiện
+  Future<void> initListEvent() async {
     emit(state.copyWith(status: EventStatus.loading));
-    final events = await _firebaseService.initListEvent();
-    emit(state.copyWith(
-      events: events,
-      status: EventStatus.success,
-    ));
+    try {
+      final events = await _firebaseService.initListEvent();
+      emit(state.copyWith(
+        events: events,
+        status: EventStatus.createSuccess,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        error: e.toString(),
+        status: EventStatus.failure,
+      ));
+    }
   }
 
   void _watchEventVotes(String eventId) {
     _voteSubscriptions[eventId]?.cancel();
     _voteSubscriptions[eventId] =
         _firebaseService.watchEventVotes(eventId).listen((votes) {
-      final newEventVotes = Map<String, Map<int, int>>.from(state.eventVotes);
-      newEventVotes[eventId] = votes;
-      emit(state.copyWith(eventVotes: newEventVotes));
-    });
+          final newEventVotes = Map<String, Map<int, int>>.from(state.eventVotes);
+          newEventVotes[eventId] = votes;
+          emit(state.copyWith(eventVotes: newEventVotes));
+        });
   }
 
-  Future<void> createEvent(EventModel event) async {
+  Future<void> createEvent(List<ChoiceModel> listChoiceEvent) async {
     try {
-      // await _firebaseService.createEvent(event);
+      emit(state.copyWith(status: EventStatus.loading));
+
+      eventModel.listChoice.clear();
+      eventModel.listChoice.addAll(listChoiceEvent);
+
       await _firebaseService.createEvent(eventModel);
+
+      emit(state.copyWith(status: EventStatus.createSuccess));
     } catch (e) {
       emit(state.copyWith(
         error: e.toString(),
         status: EventStatus.failure,
       ));
+      print('Error creating event: $e');
     }
   }
 
@@ -99,7 +107,6 @@ class EventCubit extends Cubit<EventState> {
       ));
     }
   }
-
   Future<void> deleteEvent(String eventId) async {
     try {
       await _firebaseService.deleteEvent(eventId);
@@ -113,53 +120,9 @@ class EventCubit extends Cubit<EventState> {
     }
   }
 
-  void updateValueChoice({required String valueChoice, required int index}) {
-    eventModel.listChoice[index].textChoice = valueChoice;
-  }
-
   void updateNameEvent({required String valueName}) {
     eventModel.name = valueName;
   }
-
-  Future<void> updateImagePathChoice(
-      {required String imagePath, required int index}) async {
-    eventModel.listChoice[index].imagePath = imagePath;
-    print(eventModel.listChoice[index].imagePath + "ASASASAS");
-    emit(state.copyWith(
-        currentEventCreate: eventModel, status: EventStatus.updateImage));
-  }
-
-  // Future<void> updateBoxName(String eventId, int index, String newName) async {
-  //   try {
-  //     final event = state.events.firstWhere((e) => e.id == eventId);
-  //     final updatedBoxNames = List<String>.from(event.listChoice);
-  //
-  //     if (updatedBoxNames.length > index) {
-  //       updatedBoxNames[index] = newName;
-  //     } else {
-  //       while (updatedBoxNames.length <= index) {
-  //         updatedBoxNames.add('');
-  //       }
-  //       updatedBoxNames[index] = newName;
-  //     }
-  //
-  //     await _firebaseService.updateEventBoxNames(eventId, updatedBoxNames);
-  //
-  //     final updatedEvents = state.events.map((e) {
-  //       if (e.id == eventId) {
-  //         return e.copyWith(boxNames: updatedBoxNames);
-  //       }
-  //       return e;
-  //     }).toList();
-  //
-  //     emit(state.copyWith(events: updatedEvents));
-  //   } catch (e) {
-  //     emit(state.copyWith(
-  //       error: e.toString(),
-  //       status: EventStatus.failure,
-  //     ));
-  //   }
-  // }
 
   @override
   Future<void> close() {

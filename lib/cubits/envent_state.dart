@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import '../../models/event.dart';
 
-enum EventStatus { initial, loading, success, failure, updateImage }
+enum EventStatus { initial, loading, success, failure, updateImage ,createSuccess}
 
 class EventState extends Equatable {
   final List<EventModel> events;
